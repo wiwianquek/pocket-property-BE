@@ -6,15 +6,12 @@ module.exports = {
     verifyJWT
 }
 
-function createJWT(payload) {
-    return jwt.sign(
-        // data payload
-        { payload },
-        process.env.SECRET,
-        { expiresIn: "24h" }
-      );
-}
+function createJWT(user) {
+    // user is an object containing the user's details
+    return jwt.sign(user, process.env.SECRET, { expiresIn: '24h' });
+  }
 
+  
 function getExpiry(token) {
     const payloadBase64 = token.split('.')[1];
     const decodedJson = Buffer.from(payloadBase64, 'base64').toString();
@@ -24,14 +21,13 @@ function getExpiry(token) {
 }
 
 function verifyJWT(token) {
-    const payload = jwt.verify(token, process.env.SECRET, function (err, decoded) {
-        // If valid token, decoded will be the token's entire payload
-        // If invalid token, err will be set
-        if (err) {
-            return null;
-        }
-        return decoded;
-    })
-    console.log(payload)
-    return payload
-}
+    try {
+      return jwt.verify(token, process.env.SECRET);
+      // No need to access decoded.payload, as the payload is now the root
+    } catch (err) {
+      console.error("Token verification error:", err);
+      return null;
+    }
+  }
+
+

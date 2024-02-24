@@ -1,32 +1,47 @@
 const utilSecurity = require("../util/security")
 const modelUser = require("../models/users");
 
-
 module.exports = {
     checkJWT,
+    checkJWTNotes,
     checkLogin,
     checkPermission
 };
 
-function checkJWT(req, res, next) {
-    // Check for the token being sent in a header or as a query parameter
-    // console.log(req)
-    let token = req.get("Authorization") || req.query.token;
-   
-    // console.log(token)
-    if (token) {
-        token = token.replace("Bearer ", "");
-        req.user = utilSecurity.verifyJWT(token);
-        
+function checkJWTNotes(req, res, next) {
+  let token = req.headers.authorization;
+  if (token) {
+    token = token.replace(/^Bearer\s/, "");
+    const decoded = utilSecurity.verifyJWT(token);
+    if (decoded) {
+      req.user = decoded; // The payload is now the entire object
+      next();
     } else {
-      // No token was sent
-      req.user = null;
+      return res.status(401).json({ errorMsg: "Invalid token" });
     }
+  } else {
+    return res.status(401).json({ errorMsg: "No token provided" });
+  }
+}
 
-   
-    return next();
-  };
-  
+function checkJWT(req, res, next) {
+  let token = req.get("Authorization") || req.query.token;
+  if (token) {
+      token = token.replace("Bearer ", "");
+      const decoded = utilSecurity.verifyJWT(token);
+      if (decoded) {
+          // Adjust this according to your token's payload structure
+          // If your payload is wrapped in a "payload" object, it needs to be decoded.payload here
+          req.user = decoded;
+          next();
+      } else {
+          res.status(401).json({ errorMsg: "Invalid token" });
+      }
+  } else {
+      req.user = null;
+      next();
+  }
+}
 
 function checkLogin(req, res, next) {
     // Status code of 401 is Unauthorized
@@ -41,3 +56,5 @@ function checkPermission(req, res, next) {
     if (req.body.email != req.user.email && req.user.is_admin == false) return res.status(401).json("Unauthorized"); 
     next();
   };
+
+
