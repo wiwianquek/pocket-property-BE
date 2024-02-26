@@ -34,7 +34,7 @@ function getCardWithNotesEntry(cardId) {
 //   return daoCard.find(queryFields).populate('notesentry_ids');
 // }
 
-function  createCardID(card) {
+function createCardID(card) {
     return daoCard.create(card);
 }
 

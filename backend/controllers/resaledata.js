@@ -16,51 +16,63 @@ async function getResaleDataEntry(req, res) {
     }
 }
 
-// 
-
 async function searchResaleData(req, res) {
     try {
-        const { town, street_name, flat_type, property_type, storey_range } = req.query;
-        let query = {};
+      const { town, street_name, flat_type, property_type, storey_range } = req.query;
+      let query = {};
+  
+      // Construct the query with the provided parameters
+      if (town) {
+        query.town = new RegExp(town, 'i');
+      }
+      if (street_name) {
+        query.street_name = new RegExp(street_name, 'i');
+      }
+      if (flat_type) {
+        // Handle multiple flat_type values
+        query.flat_type = Array.isArray(flat_type) ? { $in: flat_type } : flat_type;
+      }// Handle multiple property_type values
+      if (property_type) {
+        query.flat_model = Array.isArray(property_type) ? { $in: property_type } : property_type;
+      }
+      if (storey_range) {
+        // Handle multiple storey_range values
+        query.storey_range = Array.isArray(storey_range) ? { $in: storey_range } : storey_range;
+      }
+  
+      // Perform the search
+      const results = await modelResaleData.searchResaleData(query);
+  
+      // Calculate the average price and remaining lease
+      const summary = await modelResaleData.calculateAveragePriceAndLease(query);
 
-        // Construct the query with the provided parameters
-        if (town) {
-            query.town = new RegExp(town, 'i');
-        }
-        if (street_name) {
-            query.street_name = new RegExp(street_name, 'i');
-        }
-        if (flat_type) {
-            query.flat_type = flat_type;
-        }
-        if (property_type) {
-            query.flat_model = property_type;
-        }
-        if (storey_range) {
-            query.storey_range = storey_range;
-        }
-
-        // Perform the search
-        const results = await modelResaleData.searchResaleData(query);
-
-        // Calculate the average price and remaining lease
-        const summary = await modelResaleData.calculateAveragePriceAndLease(query);
-        
-        // Respond with the results and summary information
-        res.json({
-            results,
-            count: results.length,
-            // averagePrice: summary.averagePrice ? summary.averagePrice.toFixed(2) : "0.00",
-            // averageRemainingLease: summary.averageRemainingLease ? summary.averageRemainingLease.toFixed(2) : "0.00",
-            averagePrice: summary.averagePrice ? summary.averagePrice : "0.00",
-            averageRemainingLease: summary.averageRemainingLeaseYears ? summary.averageRemainingLeaseYears : "0.00",
-            searchTerms: req.query // Include the search terms in the response
-        });
+      console.log('Average price type:', typeof summary.averagePrice);
+  
+      // Create a summary object including the totalUnitsFound
+      const summaryWithCount = {
+        unitsFound: results.length,
+        averagePrice: summary.averagePrice ? summary.averagePrice.toFixed(2) : "0.00",
+        averageRemainingLeaseYears: summary.averageRemainingLeaseYears ? summary.averageRemainingLeaseYears.toFixed(0) : "0",
+        averageRemainingLeaseExtraMonths: summary.averageRemainingLeaseExtraMonths ? summary.averageRemainingLeaseExtraMonths.toFixed(0) : "0"
+      };
+  
+      // Log the summary with count
+      console.log({ summary: summaryWithCount });
+  
+      // Respond with the results and summary information
+      res.json({
+        results,
+        summary: summaryWithCount,
+        searchTerms: req.query // Include the search terms in the response
+      });
+  
     } catch (err) {
-        // Handle any errors that may occur
-        res.status(500).json({ errorMsg: err.message });
+      // Handle any errors that may occur
+      console.error(err); // Log the error for debugging purposes
+      res.status(500).json({ errorMsg: err.message });
     }
-}
+  }
+  
 
 async function deleteResaleDataEntry(req, res) {
     try {
@@ -78,5 +90,6 @@ async function deleteResaleDataEntry(req, res) {
         res.status(500).json({ errorMsg: err.message });
     }
 }
+
 
 

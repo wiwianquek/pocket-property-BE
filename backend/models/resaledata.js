@@ -15,77 +15,55 @@ function deleteResaleDataEntry(entryId) {
     return ResaleDataEntry.findByIdAndDelete(entryId);
 }
 
-// async function calculateAveragePriceAndLease(query) {
-//     // Log the incoming query to see what's being passed to the aggregate function.
-//     console.log('Aggregation Query:', JSON.stringify(query, null, 2));
-
-//     const result = await ResaleDataEntry.aggregate([
-//         { $match: query },
-//         { $addFields: {
-//             totalLeaseMonths: { 
-//                 $add: [
-//                     { $multiply: ["$remaining_lease.years", 12] }, 
-//                     "$remaining_lease.months"
-//                 ] 
-//             }
-//         }},
-//         { $group: {
-//             _id: null,
-//             averagePrice: { $avg: "$resale_price" },
-//             averageRemainingLeaseMonths: { $avg: "$totalLeaseMonths" }
-//         }}
-//     ]);
-
-//     // Log the result of the aggregate to see what's being returned.
-//     console.log('Aggregation Result:', JSON.stringify(result, null, 2));
-
-//     if (result && result.length > 0) {
-//         const averageRemainingLease = result[0].averageRemainingLeaseMonths
-//             ? (result[0].averageRemainingLeaseMonths / 12).toFixed(2)
-//             : null;
-//         return {
-//             averagePrice: result[0].averagePrice.toFixed(2),
-//             averageRemainingLease: averageRemainingLease
-//         };
-//     }
-//     return { averagePrice: "0.00", averageRemainingLease: "0.00" };
-// }
-
 async function calculateAveragePriceAndLease(query) {
-    // Log the incoming query to see what's being passed to the aggregate function.
-    console.log('Aggregation Query:', JSON.stringify(query, null, 2));
-
-    const result = await ResaleDataEntry.aggregate([
+    const aggregation = await ResaleDataEntry.aggregate([
         { $match: query },
         { $addFields: {
-            totalLeaseMonths: { 
-                $add: [
-                    { $multiply: ["$remaining_lease.years", 12] }, 
-                    "$remaining_lease.months"
-                ] 
+            leaseComponents: { $regexFindAll: { input: "$remaining_lease", regex: /(\d+)/g } }
+        }},
+        { $addFields: {
+            totalLeaseMonths: {
+                $sum: [
+                    { $multiply: [ { $toInt: { $arrayElemAt: [ "$leaseComponents.match", 0 ] } }, 12 ] },
+                    { $toInt: { $arrayElemAt: [ "$leaseComponents.match", 1 ] } }
+                ]
             }
         }},
         { $group: {
             _id: null,
-            averagePrice: { $avg: "$resale_price" },
-            averageRemainingLeaseMonths: { $avg: "$totalLeaseMonths" }
+            averagePrice: { $avg: { $ifNull: [ "$resale_price", 0 ] } },
+            averageRemainingLeaseMonths: { $avg: { $ifNull: [ "$totalLeaseMonths", 0 ] } }
+        }},
+        { $addFields: {
+            averageRemainingLeaseYears: { $floor: { $divide: [ "$averageRemainingLeaseMonths", 12 ] } },
+            averageRemainingLeaseExtraMonths: { $mod: [ { $floor: "$averageRemainingLeaseMonths" }, 12 ] }
         }}
     ]);
 
-    console.log('Aggregation Result:', result); // Debugging line to check the actual aggregation result
+    console.log('Aggregation Result:', aggregation);
 
-    if (result && result.length > 0 && result[0].averagePrice != null) {
-        const averageRemainingLeaseYears = result[0].averageRemainingLeaseMonths
-            ? (result[0].averageRemainingLeaseMonths / 12).toFixed(2)
-            : null;
-        return {
-            averagePrice: result[0].averagePrice.toFixed(2),
-            averageRemainingLeaseYears: averageRemainingLeaseYears
-        };
+    // Initialize summary with default values
+    let summary = {
+        averagePrice: "0.00",
+        averageRemainingLeaseYears: 0,
+        averageRemainingLeaseExtraMonths: 0
+    };
+
+    // Check if the aggregation result is not empty
+    if (aggregation.length > 0) {
+        const aggResult = aggregation[0];
+        
+        // Convert averagePrice to a string with 2 decimal places
+        // Use the .toFixed() directly if you're certain that averagePrice is always a number.
+        summary.averagePrice = aggResult.averagePrice;
+        
+        // No need to change for these fields as they are already being calculated as numbers
+        summary.averageRemainingLeaseYears = Math.floor(aggResult.averageRemainingLeaseYears);
+        summary.averageRemainingLeaseExtraMonths = aggResult.averageRemainingLeaseExtraMonths;
     }
-    return { averagePrice: null, averageRemainingLeaseYears: null };
-}
 
+    return summary;
+}
 
 
 function searchResaleData(query) {
@@ -109,3 +87,5 @@ function searchResaleData(query) {
     return ResaleDataEntry.find(searchQuery);
 }
 
+
+  
