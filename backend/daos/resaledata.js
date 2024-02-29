@@ -10,20 +10,20 @@ const resaleDataEntrySchema = new Schema({
   storey_range: String,
   floor_area_sqm: Number,
   flat_model: String,
-  lease_commence_date: Number, // Use Number if this is always a year and does not include month or day
+  lease_commence_date: Number, 
   remaining_lease: {
     years: Number,
     months: Number
   },
   resale_price: Number,
   user_id: {
-    type: mongoose.Schema.Types.ObjectId, // This assumes you have a User model and each entry is linked to a User.
+    type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
-    required: false // Set to false if the user_id is optional
+    required: false // set to false if the user_id is optional
   }
 }, {
     timestamps: true, // this will add createdAt and updatedAt timestamps
-    collection: 'resaledataentry' // Explicitly set the collection name here
+    collection: 'resaledataentry' 
   });
   
 

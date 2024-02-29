@@ -17,6 +17,5 @@ module.exports = router;
 //GET http://localhost:3000/resaledata/search?town=Bedok
 //GET http://localhost:3000/resaledata/search?street_name=Ave 4
 //GET http://localhost:3000/resaledata/search?town=Bedok&street_name=Ave 4
-//http://localhost:3000/resaledata/search?town=Bedok&flat_type=3%20ROOM&property_type=Improved&storey_range=01%20TO%2003
-
+// http://localhost:3000/resaledata/search?search=bedok&flat_type=1%20ROOM&flat_type=2%20ROOM&flat_model=Improved&flat_model=Standard&storey_range=01%20TO%2003&storey_range=04%20TO%2006
 

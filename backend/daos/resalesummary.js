@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 const resalesummarySchema = new mongoose.Schema({
     searchTerms: {
         town: String,
-        flat_type: [String], // Changed to an array of strings
-        property_type: [String], // Changed to an array of strings
-        storey_range: [String] // Changed to an array of strings
+        flat_type: [String], 
+        flat_model: [String], 
+        storey_range: [String] 
     },
     unitsFound: Number,
     averagePrice: String,

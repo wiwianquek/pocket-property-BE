@@ -18,7 +18,7 @@ async function getResaleDataEntry(req, res) {
 
 async function searchResaleData(req, res) {
     try {
-      const { town, street_name, flat_type, property_type, storey_range } = req.query;
+      const { town, street_name, flat_type, flat_model, storey_range } = req.query;
       let query = {};
   
       // Construct the query with the provided parameters
@@ -31,9 +31,9 @@ async function searchResaleData(req, res) {
       if (flat_type) {
         // Handle multiple flat_type values
         query.flat_type = Array.isArray(flat_type) ? { $in: flat_type } : flat_type;
-      }// Handle multiple property_type values
-      if (property_type) {
-        query.flat_model = Array.isArray(property_type) ? { $in: property_type } : property_type;
+      }// Handle multiple flat_model values
+      if (flat_model) {
+        query.flat_model = Array.isArray(flat_model) ? { $in: flat_model } : flat_model;
       }
       if (storey_range) {
         // Handle multiple storey_range values
@@ -90,6 +90,3 @@ async function deleteResaleDataEntry(req, res) {
         res.status(500).json({ errorMsg: err.message });
     }
 }
-
-
-

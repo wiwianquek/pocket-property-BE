@@ -77,13 +77,13 @@ function searchResaleData(query) {
     if (query.flat_type) {
         searchQuery.flat_type = query.flat_type;
     }
-    if (query.property_type) {
-        searchQuery.flat_model = query.property_type; // Assuming flat_model is property_type in your schema
+    if (query.flat_model) {
+        searchQuery.flat_model = query.flat_model; 
     }
     if (query.storey_range) {
         searchQuery.storey_range = query.storey_range;
     }
-    
+    console.log("search query debug:", searchQuery)
     return ResaleDataEntry.find(searchQuery);
 }
 
