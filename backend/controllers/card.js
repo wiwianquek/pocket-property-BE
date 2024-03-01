@@ -12,7 +12,7 @@ module.exports = {
 async function getCardID(req, res) {
     try {
       const cardData = await modelCards.getCardID({});
-      res.json(cardData); // No need for {card: cardData} if you want an array back
+      res.json(cardData); 
     } catch (err) {
       res.status(500).json({ errorMsg: err.message });
     }
@@ -21,7 +21,7 @@ async function getCardID(req, res) {
 
 async function createCardID(req, res) {
     try {
-      const cardData = await modelCards.createCardID(req.body); // req.body is likely empty here
+      const cardData = await modelCards.createCardID(req.body); 
       res.json(cardData); // Send back the new card data
     } catch (err) {
       res.status(500).json({ errorMsg: err.message });
@@ -39,7 +39,7 @@ async function getOnlyCardID(req, res) {
 
 async function getCardWithNotesEntry(req, res) {
   try {
-      const cardId = req.params.card_id; // Assuming you pass the card_id as a URL parameter
+      const cardId = req.params.card_id; // passing the card_id as a URL parameter
       const card = await modelCards.getCardWithNotesEntry(cardId);
       res.json(card);
   } catch (err) {
@@ -50,13 +50,12 @@ async function getCardWithNotesEntry(req, res) {
 async function deleteCard(req, res) {
   try {
     await modelCards.deleteCard(req.params.cardId);
-    res.status(204).send(); // 204 No Content
+    res.status(204).send(); 
   } catch (err) {
     res.status(500).json({ errorMsg: err.message });
   }
 }
 
-// Function to remove a note entry ID from a card's notesentry_ids array
 async function removeNoteEntryFromCard(noteEntryId, cardId) {
   try {
       return await daoCard.findByIdAndUpdate(
@@ -65,7 +64,6 @@ async function removeNoteEntryFromCard(noteEntryId, cardId) {
           { new: true }
       );
   } catch (err) {
-      // Handle error
       throw err;
   }
 }

@@ -1,6 +1,5 @@
 const modelNotes = require("../models/notes");
 const modelCards = require("../models/card");
-// No need to require jwt and JWT_SECRET here as we use the utility functions
 
 module.exports = {
     getNotesEntry,
@@ -12,7 +11,7 @@ module.exports = {
 
 async function getNotesEntry(req, res) {
     try {
-        const userId = req.user.userId; // Adjust to match the structure of your JWT payload
+        const userId = req.user.userId; 
         const notesEntries = await modelNotes.getNotesEntryByUserId(userId);
         res.json(notesEntries);
     } catch (err) {
@@ -44,7 +43,6 @@ async function createNotesEntry(req, res) {
     }
 }
 
-// Updates a note entry
 async function updateNotesEntry(req, res) {
     try {
         const entryId = req.params.entryId;
@@ -55,7 +53,6 @@ async function updateNotesEntry(req, res) {
     }
 }
 
-// Gets a single note entry by ID
 async function getNotesEntryById(req, res) {
     try {
         const entryId = req.params.entryId;
@@ -70,7 +67,6 @@ async function getNotesEntryById(req, res) {
     }
 }
 
-// Deletes a note entry
 async function deleteNotesEntry(req, res) {
     try {
         const entryId = req.params.entryId;

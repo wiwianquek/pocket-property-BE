@@ -10,7 +10,7 @@ const notesEntrySchema = new Schema({
     card_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'CardID',
-      required: true  // Make sure this is set to required if it should always be present
+      required: true  
     },
     entry_title: {
       type: String,

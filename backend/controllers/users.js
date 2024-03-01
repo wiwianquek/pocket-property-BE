@@ -63,7 +63,6 @@ async function createUser(req, res) {
     
     res.status(201).json(userData); //note 200 for success and 201 for created
 
-    // TODO: Redirect in front end to login page after successful registration
     // Commenting this out coz we are redirecting in the front end
     // res.redirect('/users'); 
   } catch (err) {

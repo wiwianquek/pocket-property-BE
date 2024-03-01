@@ -14,7 +14,7 @@ function checkJWTNotes(req, res, next) {
     token = token.replace(/^Bearer\s/, "");
     const decoded = utilSecurity.verifyJWT(token);
     if (decoded) {
-      req.user = decoded; // The payload is now the entire object
+      req.user = decoded; // payload is now the entire object
       next();
     } else {
       return res.status(401).json({ errorMsg: "Invalid token" });
@@ -30,8 +30,7 @@ function checkJWT(req, res, next) {
       token = token.replace("Bearer ", "");
       const decoded = utilSecurity.verifyJWT(token);
       if (decoded) {
-          // Adjust this according to your token's payload structure
-          // If your payload is wrapped in a "payload" object, it needs to be decoded.payload here
+          // adjust this according to token's payload structure
           req.user = decoded;
           next();
       } else {
@@ -44,14 +43,12 @@ function checkJWT(req, res, next) {
 }
 
 function checkLogin(req, res, next) {
-    // Status code of 401 is Unauthorized
     if (!req.user) return res.status(401).json("Unauthorized");
     // A okay
     next();
   };
 
 function checkPermission(req, res, next) {
-    // Status code of 401 is Unauthorized
     if (!req.user) return res.status(401).json("Unauthorized");
     if (req.body.email != req.user.email && req.user.is_admin == false) return res.status(401).json("Unauthorized"); 
     next();

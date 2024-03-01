@@ -6,7 +6,6 @@ module.exports = {
     deleteSearchSummary,
 };
 
-// Function to save search summary
 async function saveSearchSummary(req, res) {
     try {
         const userId = req.user.userId;
@@ -27,8 +26,6 @@ async function saveSearchSummary(req, res) {
     }
 }
 
-
-// Function to delete search summary
 async function deleteSearchSummary(req, res) {
     try {
         const summaryId = req.params.summaryId; // Ensure that your route parameter matches this name
@@ -40,7 +37,6 @@ async function deleteSearchSummary(req, res) {
     }
 }
 
-// Function to get search summaries by user ID
 async function getSearchSummaryByUserId(req, res) {
     try {
         const userId = req.user.userId; // Extracted from JWT by your middleware

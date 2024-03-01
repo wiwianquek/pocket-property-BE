@@ -24,7 +24,7 @@ var app = express();
 
 // Define CORS options
 const corsOptions = {
-  origin: 'http://localhost:5173', // Ensure this matches your frontend's exact URL
+  origin: 'https://pocket-property.onrender.com', // Ensure this matches your frontend's exact URL
   optionsSuccessStatus: 200 // For legacy browser support
 };
 

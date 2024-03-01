@@ -8,7 +8,7 @@ module.exports = {
 
 async function getResaleDataEntry(req, res) {
     try {
-        const userId = req.user.userId; // Adjust to match the structure of your JWT payload
+        const userId = req.user.userId; 
         const resaledataEntry = await modelResaleData.getResaleDataEntryByUserId(userId);
         res.json(resaledataEntry);
     } catch (err) {
