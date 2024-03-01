@@ -122,7 +122,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(securityMiddleware.checkJWT);
 
 //Routes
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/notes', notesRouter);
 app.use('/card', cardRouter);
