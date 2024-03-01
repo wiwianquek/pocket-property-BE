@@ -32,15 +32,6 @@ const corsOptions = {
 // Apply CORS with the options
 app.use(cors(corsOptions));
 
-// // Define CORS options
-// const corsOptions = {
-//   origin: 'https://pocket-property.onrender.com/', // Ensure this matches your frontend's exact URL
-//   optionsSuccessStatus: 200 // For legacy browser support
-// };
-
-// // Apply CORS with the options
-// app.use(cors(corsOptions));
-
 // Enable preflight requests for all routes
 app.options('*', cors(corsOptions)); // This will handle preflight requests
 
@@ -53,15 +44,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// // CORS Middleware setup
-// app.use(cors({ origin: 'https://pocket-property.onrender.com/' })); // Enable CORS for the frontend app
-
-// // Enable preflight requests for all routes
-// app.options('*', cors({ origin: 'https://pocket-property.onrender.com/' })); // This handles preflight requests
-
-// app.use(cors(corsOptions));
-// app.options('*', cors(corsOptions));
 
 // Security middleware, if it's used for checking JWT it should be after CORS setup
 app.use(securityMiddleware.checkJWT);
