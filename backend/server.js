@@ -24,7 +24,7 @@ var app = express();
 
 // Define CORS options
 const corsOptions = {
-  origin: 'https://pocket-property.onrender.com', // Ensure this matches your frontend's exact URL
+  origin: 'https://pocket-property.onrender.com/', // Ensure this matches your frontend's exact URL
   optionsSuccessStatus: 200 // For legacy browser support
 };
 
@@ -45,10 +45,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS Middleware setup
-app.use(cors({ origin: 'http://localhost:3000/' })); // Enable CORS for the frontend app
+app.use(cors({ origin: 'https://pocket-property.onrender.com/' })); // Enable CORS for the frontend app
 
 // Enable preflight requests for all routes
-app.options('*', cors({ origin: 'http://localhost:3000/' })); // This handles preflight requests
+app.options('*', cors({ origin: 'https://pocket-property.onrender.com/' })); // This handles preflight requests
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
